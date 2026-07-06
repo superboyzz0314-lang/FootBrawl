@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NEON/KICK — Football Trading Cards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@500;700;800;900&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ---------- RESET & BASE ---------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #050505;
+  --surface-1: #0e0e0e;
+  --surface-2: #141414;
+  --volt: #D4FF00;
+  --volt-hover: #BBE600;
+  --white: #ffffff;
+  --white-70: rgba(255,255,255,0.7);
+  --white-50: rgba(255,255,255,0.5);
+  --white-40: rgba(255,255,255,0.4);
+  --white-10: rgba(255,255,255,0.1);
+  --white-05: rgba(255,255,255,0.05);
+}
+html, body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Manrope', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+a { color: inherit; text-decoration: none; }
+button { font: inherit; background: none; border: none; color: inherit; cursor: pointer; }
+img, svg { display: block; max-width: 100%; }
+ul, ol { list-style: none; }
+::selection { background: var(--volt); color: #000; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-thumb { background: #1f1f1f; border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: var(--volt); }
+
+/* ---------- TYPOGRAPHY ---------- */
+.font-heading { font-family: 'Anton', 'Impact', sans-serif; letter-spacing: -0.02em; text-transform: uppercase; }
+.font-stat { font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.02em; }
+
+/* ---------- UTILITIES ---------- */
+.container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+@media (min-width: 768px) { .container { padding: 0 48px; } }
+
+.volt { color: var(--volt); }
+.volt-glow { text-shadow: 0 0 20px rgba(212,255,0,0.5), 0 0 40px rgba(212,255,0,0.25); }
+.volt-shadow { box-shadow: 0 0 20px rgba(212,255,0,0.35), 0 0 60px rgba(212,255,0,0.15); }
+
+.spotlight-bg {
+  background:
+    radial-gradient(circle at 20% 10%, rgba(212,255,0,0.08), transparent 45%),
+    radial-gradient(circle at 80% 90%, rgba(212,255,0,0.05), transparent 45%),
+    var(--bg);
+}
+.diagonal-stripes {
+  background-image: repeating-linear-gradient(135deg, rgba(212,255,0,0.04) 0, rgba(212,255,0,0.04) 2px, transparent 2px, transparent 12px);
+}
+
+/* Noise overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+  opacity: 0.06;
+  z-index: 100;
+  mix-blend-mode: overlay;
+}
+
+/* ---------- HERO ---------- */
+.hero {
+  position: relative;
+  width: 100%;
+  padding: 24px 0 56px;
+  overflow: hidden;
+}
+@media (min-width: 768px) { .hero { padding: 32px 0 96px; } }
+
+.hero-bg {
+  position: absolute; inset: 0; z-index: -2;
+  background-image: url('https://images.pexels.com/photos/11953753/pexels-photo-11953753.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.4;
+}
+.hero-overlay {
+  position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.8), var(--bg));
+}
+.hero-stripes {
+  position: absolute; inset: 0; z-index: -1;
+}
+.hero-badges {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--white-50);
+  font-weight: 700;
+}
+@media (min-width: 768px) { .hero-badges { padding: 0 48px; } }
+.hero-badges .center { display: none; }
+@media (min-width: 768px) { .hero-badges .center { display: inline; } }
+.hero-badge-icon { display: inline-flex; align-items: center; gap: 8px; }
+.hero-badge-icon svg { color: var(--volt); }
+
+.hero-title {
+  font-family: 'Anton', sans-serif;
+  text-transform: uppercase;
+  color: var(--white);
+  line-height: 0.82;
+  letter-spacing: -0.03em;
+  margin-top: 16px;
+  padding: 0 16px;
+  text-align: center;
+  font-size: clamp(4rem, 15vw, 16rem);
+  user-select: none;
+}
+@media (min-width: 768px) { .hero-title { margin-top: 24px; padding: 0 32px; } }
+.hero-title .slash {
+  color: var(--volt);
+  text-shadow: 0 0 20px rgba(212,255,0,0.5), 0 0 40px rgba(212,255,0,0.25);
+}
+
+.hero-sub {
+  max-width: 1152px;
+  margin: 32px auto 0;
+  padding: 0 24px;
+  display: grid;
+  gap: 24px;
+  align-items: end;
+}
+@media (min-width: 768px) {
+  .hero-sub { grid-template-columns: 2fr 1fr; margin-top: 56px; padding: 0 48px; }
+}
+.hero-copy {
+  color: var(--white-70);
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 36rem;
+}
+@media (min-width: 768px) { .hero-copy { font-size: 16px; } }
+.hero-ctas { display: flex; gap: 12px; }
+@media (min-width: 768px) { .hero-ctas { justify-content: flex-end; } }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 0.2em;
+  padding: 16px 24px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
+}
+.btn-primary {
+  background: var(--volt);
+  color: #000;
+  box-shadow: 0 0 20px rgba(212,255,0,0.35), 0 0 60px rgba(212,255,0,0.15);
+}
+.btn-primary:hover { background: var(--white); }
+.btn-outline {
+  border-color: rgba(255,255,255,0.25);
+  color: var(--white);
+  background: transparent;
+}
+.btn-outline:hover { border-color: var(--volt); color: var(--volt); }
+
+/* ---------- NAV PILL ---------- */
+.nav-pill {
+  position: sticky;
+  top: 16px;
+  z-index: 40;
+  max-width: 56rem;
+  margin: 24px auto 48px;
+  padding: 12px 16px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(10,10,10,0.8);
+  border: 1px solid var(--white-10);
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+@media (min-width: 768px) { .nav-pill { padding: 12px 24px; } }
+.nav-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 0.2em;
+}
+.nav-logo svg { color: var(--volt); }
+.nav-links {
+  display: none;
+  gap: 32px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--white-70);
+}
+@media (min-width: 768px) { .nav-links { display: flex; } }
+.nav-links a { transition: color 0.2s; }
+.nav-links a:hover { color: var(--volt); }
+.nav-cta {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  background: var(--volt);
+  color: #000;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  transition: background 0.2s;
+}
+.nav-cta:hover { background: var(--white); }
+
+/* ---------- SECTION SHARED ---------- */
+.section {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 80px 24px;
+}
+@media (min-width: 768px) { .section { padding: 112px 48px; } }
+.section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 56px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--white-10);
+}
+@media (min-width: 768px) { .section-head { margin-bottom: 80px; } }
+.eyebrow {
+  color: var(--volt);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  margin-bottom: 12px;
+}
+.section-title {
+  font-family: 'Anton', sans-serif;
+  text-transform: uppercase;
+  font-size: clamp(2.25rem, 5vw, 4.5rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.section-meta {
+  display: none;
+  font-family: 'Barlow Condensed', sans-serif;
+  color: var(--white-40);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+@media (min-width: 768px) { .section-meta { display: block; } }
+
+/* ---------- HOW TO PLAY ---------- */
+.steps {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+@media (min-width: 768px) { .steps { grid-template-columns: repeat(3, 1fr); gap: 32px; } }
+.step {
+  position: relative;
+  background: var(--surface-1);
+  border: 1px solid var(--white-05);
+  padding: 32px;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+@media (min-width: 768px) { .step { padding: 40px; } }
+.step:hover { border-color: rgba(212,255,0,0.5); }
+.step-num-bg {
+  position: absolute;
+  top: -24px;
+  right: -16px;
+  font-family: 'Anton', sans-serif;
+  font-size: 9rem;
+  line-height: 1;
+  color: rgba(255,255,255,0.04);
+  transition: color 0.3s;
+  user-select: none;
+}
+.step:hover .step-num-bg { color: rgba(212,255,0,0.1); }
+.step-icon {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(212,255,0,0.3);
+  background: rgba(212,255,0,0.05);
+  border-radius: 2px;
+  margin-bottom: 24px;
+}
+.step-icon svg { color: var(--volt); width: 20px; height: 20px; }
+.step-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  color: var(--volt);
+  margin-bottom: 12px;
+}
+.step h3 {
+  font-family: 'Anton', sans-serif;
+  text-transform: uppercase;
+  font-size: 32px;
+  line-height: 1;
+  margin-bottom: 16px;
+  letter-spacing: -0.02em;
+}
+@media (min-width: 768px) { .step h3 { font-size: 36px; } }
+.step p {
+  color: var(--white-70);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.step-inner { position: relative; z-index: 1; }
+
+/* Card shine sweep */
+.card-shine { position: relative; overflow: hidden; }
+.card-shine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent 0%, rgba(212,255,0,0.12) 50%, transparent 100%);
+  transform: skewX(-25deg);
+  transition: left 0.7s ease;
+  pointer-events: none;
+}
+.card-shine:hover::before { left: 125%; }
+
+/* ---------- MARKET ---------- */
+.market-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+@media (min-width: 640px) { .market-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .market-grid { grid-template-columns: repeat(4, 1fr); } }
+.pack {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 6px;
+  border: 1px solid var(--white-10);
+  background: var(--surface-1);
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.pack:hover { transform: translateY(-8px); border-color: rgba(255,255,255,0.25); }
+.pack--featured {
+  border-color: rgba(212,255,0,0.6);
+  background: linear-gradient(to bottom, #151500, #0a0a05);
+  box-shadow: 0 0 20px rgba(212,255,0,0.35), 0 0 60px rgba(212,255,0,0.15);
+}
+.pack-accent-bar { height: 4px; width: 100%; position: relative; overflow: hidden; }
+
+@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+.shimmer-bar::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(212,255,0,0.4), transparent);
+  animation: shimmer 3s infinite;
+}
+.pack-body { padding: 24px; display: flex; flex-direction: column; flex: 1; }
+@media (min-width: 768px) { .pack-body { padding: 28px; } }
+.pack-tier {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+}
+.pack-badge {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  background: var(--volt);
+  color: #000;
+  padding: 2px 8px;
+  border-radius: 2px;
+}
+.pack-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
+.pack h3 {
+  font-family: 'Anton', sans-serif;
+  text-transform: uppercase;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+@media (min-width: 768px) { .pack h3 { font-size: 36px; } }
+.pack-tagline {
+  color: var(--white-50);
+  font-size: 12px;
+  margin: 8px 0 24px;
+  min-height: 3rem;
+}
+.pack-price {
+  font-family: 'Anton', sans-serif;
+  font-size: 48px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
+}
+@media (min-width: 768px) { .pack-price { font-size: 60px; } }
+.pack-price--featured { color: var(--volt); }
+.pack-contents { flex: 1; margin-bottom: 32px; display: flex; flex-direction: column; gap: 8px; }
+.pack-contents li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--white-70);
+  font-size: 14px;
+}
+.pack-contents svg { color: var(--volt); flex-shrink: 0; margin-top: 2px; width: 16px; height: 16px; }
+.pack-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 0.2em;
+  padding: 16px;
+  border-radius: 2px;
+  border: 1px solid var(--white-10);
+  color: var(--white);
+  transition: all 0.3s;
+}
+.pack-cta:hover { background: var(--volt); color: #000; border-color: var(--volt); }
+.pack-cta--featured { background: var(--volt); color: #000; border-color: var(--volt); }
+.pack-cta--featured:hover { background: var(--white); border-color: var(--white); box-shadow: 0 0 20px rgba(212,255,0,0.35); }
+
+.market-verify { display: none; align-items: center; gap: 8px; color: var(--white-40); font-family: 'Barlow Condensed', sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 0.15em; }
+@media (min-width: 768px) { .market-verify { display: inline-flex; } }
+.market-verify svg { color: var(--volt); }
+
+/* ---------- GALLERY ---------- */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 40px; }
+@media (min-width: 768px) { .filters { gap: 12px; } }
+.filter-btn {
+  padding: 10px 16px;
+  border-radius: 9999px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  border: 1px solid var(--white-10);
+  color: var(--white-70);
+  transition: all 0.3s;
+}
+@media (min-width: 768px) { .filter-btn { padding: 10px 20px; } }
+.filter-btn:hover { border-color: rgba(212,255,0,0.6); color: var(--white); }
+.filter-btn.active {
+  background: var(--volt);
+  color: #000;
+  border-color: var(--volt);
+  box-shadow: 0 0 20px rgba(212,255,0,0.35);
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+@media (min-width: 640px) { .gallery-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 768px) { .gallery-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; } }
+@media (min-width: 1024px) { .gallery-grid { grid-template-columns: repeat(5, 1fr); } }
+
+.fut {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 6px;
+  padding: 16px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  border: 1px solid;
+  text-align: left;
+}
+@media (min-width: 768px) { .fut { padding: 20px; } }
+.fut:hover { transform: translateY(-8px); border-color: rgba(212,255,0,0.6) !important; box-shadow: 0 20px 50px rgba(212,255,0,0.18); }
+
+.fut--icon   { background: linear-gradient(to bottom, #2a2a00, #0f0f00, #000); border-color: rgba(212,255,0,0.6); }
+.fut--gold   { background: linear-gradient(to bottom, #3a2f0a, #1a1608, #000); border-color: rgba(245,197,24,0.4); }
+.fut--silver { background: linear-gradient(to bottom, #2a2a2e, #141416, #000); border-color: rgba(192,198,206,0.3); }
+.fut--bronze { background: linear-gradient(to bottom, #3a2415, #1a1109, #000); border-color: rgba(176,141,87,0.3); }
+
+.fut-topbar { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.fut-topbar--icon { background: #D4FF00; }
+.fut-topbar--gold { background: #F5C518; }
+.fut-topbar--silver { background: #C0C6CE; }
+.fut-topbar--bronze { background: #B08D57; }
+
+.fut-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
+.fut-rating {
+  font-family: 'Anton', sans-serif;
+  font-size: 40px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+@media (min-width: 768px) { .fut-rating { font-size: 48px; } }
+.fut-rating--icon { color: var(--volt); }
+.fut-rating--gold { color: #F5C518; }
+.fut-rating--silver { color: #DFE4EA; }
+.fut-rating--bronze { color: #D4A56F; }
+.fut-position {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.8);
+  margin-top: 4px;
+}
+.fut-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.fut-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+.fut-meta .fut-nation { color: var(--white-70); }
+.fut-meta .fut-club { color: var(--white-50); }
+.fut-meta svg { width: 12px; height: 12px; }
+
+.fut-silhouette {
+  position: relative;
+  height: 96px;
+  margin: 8px 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+@media (min-width: 768px) { .fut-silhouette { height: 112px; } }
+.fut-silhouette::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.3;
+  transition: opacity 0.3s;
+}
+.fut-silhouette--icon::before   { background: radial-gradient(circle at center, rgba(212,255,0,0.13) 0%, transparent 60%); }
+.fut-silhouette--gold::before   { background: radial-gradient(circle at center, rgba(245,197,24,0.13) 0%, transparent 60%); }
+.fut-silhouette--silver::before { background: radial-gradient(circle at center, rgba(192,198,206,0.13) 0%, transparent 60%); }
+.fut-silhouette--bronze::before { background: radial-gradient(circle at center, rgba(176,141,87,0.13) 0%, transparent 60%); }
+.fut:hover .fut-silhouette::before { opacity: 0.5; }
+.fut-silhouette svg { width: 80px; height: 80px; color: rgba(255,255,255,0.2); transition: color 0.3s; }
+.fut:hover .fut-silhouette svg { color: rgba(255,255,255,0.35); }
+
+.fut-name {
+  font-family: 'Anton', sans-serif;
+  text-transform: uppercase;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-align: center;
+  border-bottom: 1px solid var(--white-10);
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (min-width: 768px) { .fut-name { font-size: 24px; } }
+
+.fut-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 16px;
+  row-gap: 4px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+}
+@media (min-width: 768px) { .fut-stats { font-size: 14px; } }
+.fut-stat { display: flex; align-items: center; justify-content: space-between; }
+.fut-stat-label { color: rgba(255,255,255,0.45); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
+.fut-stat-value { font-weight: 700; }
+
+.gallery-empty {
+  border: 1px dashed var(--white-10);
+  border-radius: 6px;
+  padding: 48px;
+  text-align: center;
+}
+.gallery-empty svg { color: var(--volt); width: 24px; height: 24px; margin: 0 auto 12px; }
+.gallery-empty p { font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: 0.2em; color: var(--white-70); }
+.gallery-count { font-family: 'Barlow Condensed', sans-serif; color: var(--white-50); font-size: 14px; text-transform: uppercase; letter-spacing: 0.15em; }
+
+/* ---------- MODAL ---------- */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  place-items: center;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 16px;
+}
+.modal.open { display: grid; animation: fadeUp 0.3s cubic-bezier(0.4,0,0.2,1); }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.modal-panel {
+  position: relative;
+  width: 100%;
+  max-width: 48rem;
+  background: #0a0a0a;
+  border: 1px solid rgba(212,255,0,0.4);
+  border-radius: 6px;
+  padding: 32px;
+  display: grid;
+  gap: 32px;
+  box-shadow: 0 0 20px rgba(212,255,0,0.35), 0 0 60px rgba(212,255,0,0.15);
+}
+@media (min-width: 768px) { .modal-panel { grid-template-columns: 1fr 1fr; padding: 40px; } }
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 9999px;
+  border: 1px solid var(--white-10);
+  transition: all 0.2s;
+}
+.modal-close:hover { border-color: var(--volt); color: var(--volt); }
+.modal-close svg { width: 16px; height: 16px; }
+
+.modal-left { text-align: center; }
+@media (min-width: 768px) { .modal-left { text-align: left; } }
+.modal-rating {
+  font-family: 'Anton', sans-serif;
+  font-size: 96px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--volt);
+  text-shadow: 0 0 20px rgba(212,255,0,0.5), 0 0 40px rgba(212,255,0,0.25);
+}
+@media (min-width: 768px) { .modal-rating { font-size: 128px; } }
+.modal-pos { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3em; color: var(--white-70); margin-top: 8px; }
+.modal-name {
+  font-family: 'Anton', sans-serif;
+  text-transform: uppercase;
+  font-size: 40px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin-top: 24px;
+}
+@media (min-width: 768px) { .modal-name { font-size: 48px; } }
+.modal-meta { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin-top: 16px; }
+@media (min-width: 768px) { .modal-meta { justify-content: flex-start; } }
+.modal-meta span { display: inline-flex; align-items: center; gap: 6px; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--white-70); }
+.modal-meta svg { width: 14px; height: 14px; }
+
+.modal-right p.eyebrow-plain { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: 0.3em; color: var(--white-50); margin-bottom: 24px; }
+.modal-bars { display: flex; flex-direction: column; gap: 16px; }
+.modal-bar-head { display: flex; justify-content: space-between; margin-bottom: 4px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: 0.15em; }
+.modal-bar-head .lbl { color: var(--white-70); }
+.modal-bar-head .val { color: var(--volt); }
+.modal-bar-track { height: 6px; background: var(--white-10); border-radius: 9999px; overflow: hidden; }
+.modal-bar-fill { height: 100%; background: var(--volt); transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
+
+/* ---------- FOOTER ---------- */
+footer {
+  border-top: 1px solid var(--white-10);
+  margin-top: 80px;
+  padding: 40px 24px;
+}
+@media (min-width: 768px) { footer { padding: 40px 48px; } }
+.footer-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  justify-content: space-between;
+}
+@media (min-width: 768px) { .footer-inner { flex-direction: row; } }
+.footer-brand { display: inline-flex; align-items: center; gap: 8px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; text-transform: uppercase; font-size: 14px; letter-spacing: 0.2em; }
+.footer-brand svg { color: var(--volt); }
+.footer-note { color: var(--white-40); font-size: 12px; }
+</style>
+</head>
+<body>
+
+<!-- =============== HERO =============== -->
+<header class="hero">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="hero-overlay" aria-hidden="true"></div>
+  <div class="hero-stripes diagonal-stripes" aria-hidden="true"></div>
+
+  <div class="hero-badges">
+    <span class="hero-badge-icon">
+      <!-- lucide: zap -->
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      Season 01 · Live
+    </span>
+    <span class="center">Football Card Trading · Neon Edition</span>
+    <span style="color: var(--volt)">23 / 100 CARDS</span>
+  </div>
+
+  <h1 class="hero-title">NEON<span class="slash">/</span>KICK</h1>
+
+  <div class="hero-sub">
+    <p class="hero-copy">A physical + digital football card database. Rip packs on OLX, filter the roster by position, and hunt icons under a voltage-lit vault.</p>
+    <div class="hero-ctas">
+      <a href="#market" class="btn btn-primary">
+        Buy Packs
+        <!-- lucide: arrow-down -->
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+      </a>
+      <a href="#gallery" class="btn btn-outline">Browse</a>
+    </div>
+  </div>
+</header>
+
+<!-- =============== NAV PILL =============== -->
+<nav class="nav-pill">
+  <div class="nav-logo">
+    <!-- lucide: trophy -->
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+    Neon/Kick
+  </div>
+  <div class="nav-links">
+    <a href="#howto">How to Play</a>
+    <a href="#market">Market</a>
+    <a href="#gallery">Gallery</a>
+  </div>
+  <a href="#market" class="nav-cta">Get Packs</a>
+</nav>
+
+<!-- =============== HOW TO PLAY =============== -->
+<section id="howto" class="section">
+  <div class="section-head">
+    <div>
+      <p class="eyebrow">· Playbook</p>
+      <h2 class="section-title">How to Play</h2>
+    </div>
+    <span class="section-meta">03 Steps</span>
+  </div>
+
+  <ol class="steps">
+    <li class="step card-shine">
+      <div class="step-num-bg">01</div>
+      <div class="step-inner">
+        <div class="step-icon">
+          <!-- lucide: package -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+        </div>
+        <div class="step-label">Step 01</div>
+        <h3>Grab a Pack</h3>
+        <p>Head to the Market, pick your tier (Bronze → Icon), and buy directly on OLX. Delivery ships within 48h.</p>
+      </div>
+    </li>
+    <li class="step card-shine">
+      <div class="step-num-bg">02</div>
+      <div class="step-inner">
+        <div class="step-icon">
+          <!-- lucide: filter -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        </div>
+        <div class="step-label">Step 02</div>
+        <h3>Scan &amp; Collect</h3>
+        <p>Each card has a unique code. Filter the digital gallery by position — Striker, Wing, CAM, Defenders, GK — to complete your dream XI.</p>
+      </div>
+    </li>
+    <li class="step card-shine">
+      <div class="step-num-bg">03</div>
+      <div class="step-inner">
+        <div class="step-icon">
+          <!-- lucide: trophy -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+        </div>
+        <div class="step-label">Step 03</div>
+        <h3>Trade &amp; Climb</h3>
+        <p>Chase icons, flip duplicates, and climb the neon leaderboard. Your collection is your rank.</p>
+      </div>
+    </li>
+  </ol>
+</section>
+
+<!-- =============== MARKET =============== -->
+<section id="market" class="section">
+  <div class="section-head">
+    <div>
+      <p class="eyebrow">· Official Market</p>
+      <h2 class="section-title">Card Packs</h2>
+    </div>
+    <div class="market-verify">
+      <!-- lucide: shield-check -->
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+      Verified OLX Sellers
+    </div>
+  </div>
+  <div class="market-grid" id="market-grid"></div>
+</section>
+
+<!-- =============== GALLERY =============== -->
+<section id="gallery" class="section">
+  <div class="section-head">
+    <div>
+      <p class="eyebrow">· Card Database</p>
+      <h2 class="section-title">Card Gallery</h2>
+    </div>
+    <div class="gallery-count" id="gallery-count">0 / 0</div>
+  </div>
+
+  <div class="filters" id="filters"></div>
+  <div id="gallery-container">
+    <div class="gallery-grid" id="gallery-grid"></div>
+  </div>
+</section>
+
+<!-- =============== MODAL =============== -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-name">
+  <div class="modal-panel" id="modal-panel"></div>
+</div>
+
+<!-- =============== FOOTER =============== -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      Neon/Kick · 2026
+    </div>
+    <div class="footer-note">Physical trading cards · Sold via OLX verified sellers</div>
+  </div>
+</footer>
+
+<script>
+/* =============== DATA =============== */
+const PACKS = [
+  { id:'pack-bronze', name:'Bronze Rush',  tier:'bronze', price:'R$ 19',  tagline:'3 base cards. Every collection starts here.',
+    contents:['3 x Bronze/Silver Cards','1 Guaranteed 65+ OVR'],
+    olx_url:'https://www.olx.com.br/', accent:'#B08D57' },
+  { id:'pack-silver', name:'Silver Strike', tier:'silver', price:'R$ 49',  tagline:'Solid squad boosters for climbing ranks.',
+    contents:['5 x Silver Cards','1 Guaranteed 75+ OVR','Chance of Gold'],
+    olx_url:'https://www.olx.com.br/', accent:'#C0C6CE' },
+  { id:'pack-gold',   name:'Gold Blitz',    tier:'gold',   price:'R$ 129', tagline:'Serious firepower for serious traders.',
+    contents:['7 x Gold Cards','1 Guaranteed 84+ OVR','Rare Chance of Icon'],
+    olx_url:'https://www.olx.com.br/', accent:'#F5C518' },
+  { id:'pack-icon',   name:'Icon Vault',    tier:'icon',   price:'R$ 349', tagline:'Legends only. Guaranteed 90+ Icon inside.',
+    contents:['10 x Gold Cards','1 Guaranteed Icon (90+ OVR)','Exclusive Foil Variant'],
+    olx_url:'https://www.olx.com.br/', accent:'#D4FF00' },
+];
+
+const CARDS = [
+  {id:'c-01',name:'V. Rossi',    rating:94,position:'ST', nation:'ITA',club:'Nero FC',        tier:'icon',   stats:{PAC:92,SHO:96,PAS:82,DRI:91,DEF:42,PHY:87}},
+  {id:'c-02',name:'K. Adebayo',  rating:89,position:'ST', nation:'NGA',club:'Volt United',    tier:'gold',   stats:{PAC:94,SHO:90,PAS:74,DRI:88,DEF:38,PHY:84}},
+  {id:'c-03',name:'M. Silva',    rating:82,position:'ST', nation:'BRA',club:'Cidade FC',      tier:'silver', stats:{PAC:88,SHO:84,PAS:71,DRI:85,DEF:34,PHY:78}},
+  {id:'c-04',name:'D. Novak',    rating:75,position:'ST', nation:'SRB',club:'Bronx SC',       tier:'bronze', stats:{PAC:78,SHO:79,PAS:65,DRI:76,DEF:30,PHY:82}},
+  {id:'c-05',name:'R. Mbaye',    rating:92,position:'LW', nation:'FRA',club:'Paris Neon',     tier:'icon',   stats:{PAC:97,SHO:88,PAS:84,DRI:95,DEF:40,PHY:79}},
+  {id:'c-06',name:'T. Sinclair', rating:86,position:'LW', nation:'ENG',club:'London Volt',    tier:'gold',   stats:{PAC:91,SHO:82,PAS:80,DRI:89,DEF:42,PHY:74}},
+  {id:'c-07',name:'J. Park',     rating:80,position:'LW', nation:'KOR',club:'Seoul Sparks',   tier:'silver', stats:{PAC:88,SHO:76,PAS:74,DRI:84,DEF:38,PHY:70}},
+  {id:'c-08',name:'S. Reyes',    rating:91,position:'RW', nation:'ESP',club:'Madrid Onyx',    tier:'gold',   stats:{PAC:95,SHO:86,PAS:82,DRI:93,DEF:41,PHY:76}},
+  {id:'c-09',name:'A. Kovac',    rating:84,position:'RW', nation:'CRO',club:'Adriatic FC',    tier:'silver', stats:{PAC:90,SHO:78,PAS:76,DRI:86,DEF:40,PHY:72}},
+  {id:'c-10',name:'L. Duarte',   rating:76,position:'RW', nation:'POR',club:'Lisboa SC',      tier:'bronze', stats:{PAC:84,SHO:72,PAS:70,DRI:79,DEF:32,PHY:68}},
+  {id:'c-11',name:'F. Bergkamp', rating:93,position:'CAM',nation:'NED',club:'Amsterdam Volt', tier:'icon',   stats:{PAC:82,SHO:89,PAS:96,DRI:94,DEF:55,PHY:74}},
+  {id:'c-12',name:'H. Muller',   rating:87,position:'CAM',nation:'GER',club:'Berlin Neon',    tier:'gold',   stats:{PAC:78,SHO:84,PAS:90,DRI:88,DEF:60,PHY:76}},
+  {id:'c-13',name:'O. Tanaka',   rating:81,position:'CAM',nation:'JPN',club:'Tokyo Wire',     tier:'silver', stats:{PAC:76,SHO:78,PAS:85,DRI:84,DEF:58,PHY:70}},
+  {id:'c-14',name:'B. Chen',     rating:88,position:'LB', nation:'CHN',club:'Shanghai Bolts', tier:'gold',   stats:{PAC:90,SHO:62,PAS:78,DRI:82,DEF:89,PHY:84}},
+  {id:'c-15',name:'P. Owusu',    rating:79,position:'LB', nation:'GHA',club:'Accra United',   tier:'silver', stats:{PAC:86,SHO:55,PAS:72,DRI:76,DEF:82,PHY:80}},
+  {id:'c-16',name:'R. Hansen',   rating:74,position:'LB', nation:'DEN',club:'Copenhagen SC',  tier:'bronze', stats:{PAC:78,SHO:50,PAS:68,DRI:70,DEF:76,PHY:78}},
+  {id:'c-17',name:'E. Rivera',   rating:90,position:'RB', nation:'MEX',club:'Aztec Onyx',     tier:'gold',   stats:{PAC:92,SHO:60,PAS:80,DRI:84,DEF:88,PHY:82}},
+  {id:'c-18',name:'N. Ivanov',   rating:83,position:'RB', nation:'RUS',club:'Moscow Circuit', tier:'silver', stats:{PAC:87,SHO:55,PAS:74,DRI:78,DEF:84,PHY:82}},
+  {id:'c-19',name:'G. Botha',    rating:76,position:'RB', nation:'RSA',club:'Cape SC',        tier:'bronze', stats:{PAC:80,SHO:52,PAS:68,DRI:72,DEF:78,PHY:79}},
+  {id:'c-20',name:'L. Neumann',  rating:93,position:'GK', nation:'GER',club:'Munich Ghost',   tier:'icon',   stats:{PAC:62,SHO:30,PAS:68,DRI:60,DEF:95,PHY:90}},
+  {id:'c-21',name:'M. Costa',    rating:87,position:'GK', nation:'BRA',club:'Rio Circuit',    tier:'gold',   stats:{PAC:58,SHO:25,PAS:62,DRI:55,DEF:90,PHY:86}},
+  {id:'c-22',name:'V. Petrov',   rating:80,position:'GK', nation:'BUL',club:'Sofia Volt',     tier:'silver', stats:{PAC:55,SHO:22,PAS:58,DRI:52,DEF:84,PHY:82}},
+  {id:'c-23',name:'J. Fisher',   rating:72,position:'GK', nation:'USA',club:'NY Sparks',      tier:'bronze', stats:{PAC:50,SHO:20,PAS:55,DRI:48,DEF:76,PHY:78}},
+];
+
+const POSITIONS = [
+  { code:'ALL', label:'All' },
+  { code:'ST',  label:'Striker' },
+  { code:'LW',  label:'Left Wing' },
+  { code:'RW',  label:'Right Wing' },
+  { code:'CAM', label:'CAM' },
+  { code:'LB',  label:'Left Back' },
+  { code:'RB',  label:'Right Back' },
+  { code:'GK',  label:'Goalkeeper' },
+];
+
+const STAT_ORDER = ['PAC','SHO','PAS','DRI','DEF','PHY'];
+
+/* =============== ICONS (inline SVG) =============== */
+const ICONS = {
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  ext:   '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>',
+  flag:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>',
+  shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>',
+  star:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+  close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>',
+  search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>',
+  silhouette: '<svg viewBox="0 0 100 100" fill="currentColor"><circle cx="50" cy="32" r="14"/><path d="M20 92c0-16 13-29 30-29s30 13 30 29v8H20v-8z"/></svg>'
+};
+
+/* =============== RENDER: MARKET =============== */
+function renderMarket() {
+  const el = document.getElementById('market-grid');
+  el.innerHTML = PACKS.map((p, i) => {
+    const featured = p.tier === 'icon';
+    return `
+      <article class="pack ${featured ? 'pack--featured' : ''}">
+        <div class="pack-accent-bar" style="background:${p.accent}">
+          ${featured ? '<div class="shimmer-bar" style="position:absolute;inset:0;"></div>' : ''}
+        </div>
+        <div class="pack-body">
+          <div class="pack-head">
+            <span class="pack-tier" style="color:${p.accent}">Tier ${String(i+1).padStart(2,'0')}</span>
+            ${featured ? '<span class="pack-badge">Featured</span>' : ''}
+          </div>
+          <h3>${p.name}</h3>
+          <p class="pack-tagline">${p.tagline}</p>
+          <div class="pack-price ${featured ? 'pack-price--featured' : ''}">${p.price}</div>
+          <ul class="pack-contents">
+            ${p.contents.map(c => `<li>${ICONS.check}<span>${c}</span></li>`).join('')}
+          </ul>
+          <a href="${p.olx_url}" target="_blank" rel="noopener noreferrer" class="pack-cta ${featured ? 'pack-cta--featured' : ''}">
+            Buy on OLX ${ICONS.ext}
+          </a>
+        </div>
+      </article>
+    `;
+  }).join('');
+}
+
+/* =============== RENDER: FILTERS + GALLERY =============== */
+let activeFilter = 'ALL';
+
+function renderFilters() {
+  const el = document.getElementById('filters');
+  el.innerHTML = POSITIONS.map(p => `
+    <button class="filter-btn ${activeFilter === p.code ? 'active' : ''}" data-code="${p.code}">${p.label}</button>
+  `).join('');
+  el.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeFilter = btn.dataset.code;
+      renderFilters();
+      renderGallery();
+    });
+  });
+}
+
+function renderGallery() {
+  const filtered = activeFilter === 'ALL' ? CARDS : CARDS.filter(c => c.position === activeFilter);
+  document.getElementById('gallery-count').textContent = `${filtered.length} / ${CARDS.length}`;
+
+  const container = document.getElementById('gallery-container');
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="gallery-empty">
+        ${ICONS.search}
+        <p>No cards for this position yet</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = `<div class="gallery-grid">${
+    filtered.map(c => `
+      <button class="fut fut--${c.tier} card-shine" data-id="${c.id}">
+        <div class="fut-topbar fut-topbar--${c.tier}"></div>
+        <div class="fut-header">
+          <div>
+            <div class="fut-rating fut-rating--${c.tier}">${c.rating}</div>
+            <div class="fut-position">${c.position}</div>
+          </div>
+          <div class="fut-meta">
+            <span class="fut-nation">${ICONS.flag} ${c.nation}</span>
+            <span class="fut-club">${ICONS.shield} ${c.club}</span>
+          </div>
+        </div>
+        <div class="fut-silhouette fut-silhouette--${c.tier}">${ICONS.silhouette}</div>
+        <div class="fut-name">${c.name}</div>
+        <div class="fut-stats">
+          ${STAT_ORDER.map(k => `
+            <div class="fut-stat">
+              <span class="fut-stat-label">${k}</span>
+              <span class="fut-stat-value" style="color:${tierAccent(c.tier)}">${c.stats[k]}</span>
+            </div>
+          `).join('')}
+        </div>
+      </button>
+    `).join('')
+  }</div>`;
+
+  container.querySelectorAll('.fut').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const card = CARDS.find(c => c.id === btn.dataset.id);
+      openModal(card);
+    });
+  });
+}
+
+function tierAccent(tier) {
+  return ({ icon:'#D4FF00', gold:'#F5C518', silver:'#DFE4EA', bronze:'#D4A56F' })[tier] || '#fff';
+}
+
+/* =============== MODAL =============== */
+function openModal(card) {
+  const panel = document.getElementById('modal-panel');
+  panel.innerHTML = `
+    <button class="modal-close" aria-label="Close">${ICONS.close}</button>
+    <div class="modal-left">
+      <p class="eyebrow">· Player Sheet</p>
+      <div class="modal-rating">${card.rating}</div>
+      <div class="modal-pos">${card.position}</div>
+      <h3 class="modal-name" id="modal-name">${card.name}</h3>
+      <div class="modal-meta">
+        <span>${ICONS.flag} ${card.nation}</span>
+        <span>${ICONS.shield} ${card.club}</span>
+        <span>${ICONS.star} ${card.tier}</span>
+      </div>
+    </div>
+    <div class="modal-right">
+      <p class="eyebrow-plain">Attributes</p>
+      <div class="modal-bars">
+        ${STAT_ORDER.map(k => `
+          <div>
+            <div class="modal-bar-head">
+              <span class="lbl">${k}</span>
+              <span class="val">${card.stats[k]}</span>
+            </div>
+            <div class="modal-bar-track">
+              <div class="modal-bar-fill" style="width:${card.stats[k]}%"></div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  document.getElementById('modal').classList.add('open');
+  panel.querySelector('.modal-close').addEventListener('click', closeModal);
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+document.getElementById('modal').addEventListener('click', (e) => {
+  if (e.target.id === 'modal') closeModal();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+
+/* =============== INIT =============== */
+renderMarket();
+renderFilters();
+renderGallery();
+</script>
+</body>
+</html>
+"
+Observation: Create successful: /app/vanilla/index.html
